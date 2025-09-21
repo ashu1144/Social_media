@@ -1,8 +1,42 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FaInstagram, FaGithub } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { Link } from 'react-router-dom';
 const Signup = () => {
+  const [input, setInput] = useState({ username: '', email: '', password: '' });
+  const [error, setError] = useState('');
+
+  const handleChange = (e) => {
+    setInput({ ...input, [e.target.name]: e.target.value });
+  };
+
+  const validate = () => {
+    if (!input.username || !input.email || !input.password) {
+      return 'All fields are required.';
+    }
+    if (!input.email.includes('@gmail.com')) {
+      return 'Email must contain @gmail.com';
+    }
+    if (!/[A-Z]/.test(input.password)) {
+      return 'Password must contain at least one capital letter.';
+    }
+    if (!/\d/.test(input.password)) {
+      return 'Password must contain at least one number.';
+    }
+    return '';
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const validationError = validate();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+    setError('');
+    // ...submit logic here...
+  };
+
   return (
 
         <div className="flex flex-col justify-center gap-2 p-5 pl-10">
@@ -11,24 +45,29 @@ const Signup = () => {
                 <h1 className="font-semibold text-[45px]  ">Sign up</h1>
               </div>
         
-              <form action="" className="flex flex-col text-sm text-gray-700">
-                <label htmlFor="email" className="mb-1 font-medium">
+              <form onSubmit={handleSubmit} className="flex flex-col text-sm text-gray-700">
+                <label htmlFor="username" className="mb-1 font-medium">
                   Username
                 </label>
                 <input
                   type="text"
+                  name="username"
                   placeholder="Username"
-                  className="border border-gray-300 p-2 rounded-lg w-60 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all"
+                  className="border border-gray-300 p-2 rounded-lg w-60 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all"
+                  value={input.username}
+                  onChange={handleChange}
                 />                
-                
-                
+        
                 <label htmlFor="email" className="mb-1 font-medium">
                   Email
                 </label>
                 <input
                   type="text"
-                  placeholder="Username"
-                  className="border border-gray-300 p-2 rounded-lg w-60 mb-3 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all"
+                  name="email"
+                  placeholder="Email"
+                  className="border border-gray-300 p-2 rounded-lg w-60 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all"
+                  value={input.email}
+                  onChange={handleChange}
                 />
         
                 <label htmlFor="password" className="mb-1 font-medium">
@@ -36,9 +75,14 @@ const Signup = () => {
                 </label>
                 <input
                   type="password"
+                  name="password"
                   placeholder="Password"
-                  className="border border-gray-300 p-2 rounded-lg w-60 mb-5 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all"
+                  className="border border-gray-300 p-2 rounded-lg w-60 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all"
+                  value={input.password}
+                  onChange={handleChange}
                 />
+        
+                {error && <span className="text-red-500 mb-1">{error}</span>}
         
                 <button className="bg-blue-500 text-white px-4 py-2 rounded-lg w-60 hover:bg-blue-600 transition-colors">
                   Sign-up
